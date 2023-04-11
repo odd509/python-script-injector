@@ -11,9 +11,10 @@ The script uses two custom functions encrypt() and decrypt() to encrypt and decr
 ## Delimiters
 The script uses two delimiters to mark the beginning and end of the original code and the encrypted code.
 
-* DELIMITER:START marks the beginning of the original code.
-* DELIMITER:END marks the end of the original code and the beginning of the encrypted code.
-* DELIMITER:CRYPTO marks the end of the custom encryption and decryption functions.
+* DELIMITER:START marks the beginning of the injection.
+* DELIMITER:END marks the end of the injection and the begging of the original code.
+* DELIMITER:CRYPTO marks the end of the custom encryption and decryption functions. This delimiter is specifically used to prevent cryptographic functions from getting encrypted.
+
 ## Additional Information
 * The script requires Python 3.x to run.
 * The script only infects Python files with the extension .py.
@@ -23,3 +24,9 @@ The script uses two delimiters to mark the beginning and end of the original cod
 * This script is for educational purposes only and should not be used to harm or damage any systems or files.
 License
 * This script is licensed under the MIT License.
+
+## Sources
+
+- [XOR cipher implementation that is improvised](https://stackoverflow.com/a/70040320)
+- [Base64 encoding implementation](https://www.geeksforgeeks.org/encoding-and-decoding-base64-strings-in-python/)
+- [Code injection technique and the main inspiration](https://youtu.be/2Ra1CCG8Guo)
