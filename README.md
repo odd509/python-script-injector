@@ -16,13 +16,19 @@ The script uses two delimiters to mark the beginning and end of the original cod
 * DELIMITER:CRYPTO marks the end of the custom encryption and decryption functions. This delimiter is specifically used to prevent cryptographic functions from getting encrypted.
 
 ## Additional Information
+
 * The script requires Python 3.x to run.
 * The script only infects Python files with the extension .py.
 * The script uses a checksum of each file's name as a unique identifier to avoid infecting the same file multiple times.
 * The injected code is saved to a new file with the extension .injected before being replaced with the original file.
 * The script does not modify or delete any files other than the ones it infects.
 * This script is for educational purposes only and should not be used to harm or damage any systems or files.
-License
+
+## Motivation
+After watching ["Writing Viruses for Fun, not Profit"](https://youtu.be/2Ra1CCG8Guo) I became interested in the mechanics behind viruses and how they spread. I wanted to create my own version of a virus, but one that was harmless and would showcase my coding skills. I decided to design a script that would infect other Python files with its encrypted self, making it an interesting experiment in code security and protection. The end result is this repository, which features my unique take on virus creation and protection.
+
+
+## License
 * This script is licensed under the MIT License.
 
 ## Sources
