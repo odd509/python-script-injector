@@ -28,9 +28,6 @@ The script uses two delimiters to mark the beginning and end of the original cod
 After watching ["Writing Viruses for Fun, not Profit"](https://youtu.be/2Ra1CCG8Guo) I became interested in the mechanics behind viruses and how they spread. I wanted to create my own version of a virus, but one that was harmless and would showcase my coding skills. I decided to design a script that would infect other Python files with its encrypted self, making it an interesting experiment in code security and protection. The end result is this repository, which features my unique take on virus creation and protection.
 
 
-## License
-* This script is licensed under the MIT License.
-
 ## Sources
 
 - [XOR cipher implementation that is improvised](https://stackoverflow.com/a/70040320)
