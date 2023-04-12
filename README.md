@@ -1,9 +1,9 @@
 # Python Script Injector
 
-This Python script is designed to infect other Python files in the current directory with a copy of itself, but encrypted with a custom encryption function.
+This script allows you to inject code into multiple Python files in a directory while encrypting it to prevent it from being easily detected by anti-viruses. To inject code into the target Python files, the script creates a new file by copying the contents of the target file, adds the designated code section to the start of the new file, deletes the original target file, and then renames the new infected file back to the original target file name. This means that other scripts injected with this method will continue to function as expected by external users, while also carrying the injection and potentially infecting other scripts. The script also computes the MD5 checksum of each target file to ensure that the injection has not been applied before. The encryption and decryption functions used in the script are custom-made to avoid dependency on external libraries. 
 
 ## Usage
-To use this script, simply run it in the same directory as the Python files you wish to infect. The script will automatically detect all Python files in the directory (excluding itself), inject a copy of its encrypted code into them, and then replace the original files with the infected copies.
+To use this script, simply run it in the same directory as the Python files you wish to infect. The script will automatically detect all Python files in the directory (excluding itself), inject a copy of its encrypted code into them, and then replace the original files with the infected copies. 
 
 ## Custom Encryption and Decryption Functions
 Because some cryptography libraries require additional dependencies, the script instead uses two custom functions, encrypt() and decrypt(), to perform encryption and decryption of the code that is injected into other Python files. These functions use a custom XOR-based encryption algorithm and a Base64 encoding scheme to obfuscate the injected code.
