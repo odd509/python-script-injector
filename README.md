@@ -6,7 +6,7 @@ This Python script is designed to infect other Python files in the current direc
 To use this script, simply run it in the same directory as the Python files you wish to infect. The script will automatically detect all Python files in the directory (excluding itself), inject a copy of its encrypted code into them, and then replace the original files with the infected copies.
 
 ## Custom Encryption and Decryption Functions
-The script uses two custom functions encrypt() and decrypt() to encrypt and decrypt the code that is injected into other Python files. These functions use a custom XOR-based encryption algorithm and a Base64 encoding scheme to obfuscate the injected code.
+Because some cryptography libraries require additional dependencies, the script instead uses two custom functions, encrypt() and decrypt(), to perform encryption and decryption of the code that is injected into other Python files. These functions use a custom XOR-based encryption algorithm and a Base64 encoding scheme to obfuscate the injected code.
 
 ## Delimiters
 The script uses two delimiters to mark the beginning and end of the original code and the encrypted code.
